@@ -6,7 +6,7 @@ import appleImg from '../public/Iphone16.jpg';
 import irpodsPro from './assets/Img/irpodsPro.png';
 import Playstation from './assets/Img/PlayStation.png';
 import MacBook from './assets/Img/MacBook .jpg';
-import visionPro from './assets/Img/visionPro.jpg';
+import visionPro from './assets/Img/visionPro.png';
 
 import AppleIpad from '../public/AppleIpad.png';
 import AppleWatch from '../public/AppleWatch.png';
