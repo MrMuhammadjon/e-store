@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import Header from './assets/Components/Header';
 import Footer from './assets/Components/Footer';
+import ShopCart from './assets/features/shopCart';
 
 import appleImg from '../public/Iphone16.jpg';
 import irpodsPro from './assets/Img/irpodsPro.png';
@@ -13,15 +15,24 @@ import AppleWatch from '../public/AppleWatch.png';
 import AppleMac from '../public/Macbook1.png';
 import SamsunZFOLD from '../public/SamsungZFold.png';
 
+
 function App() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProducts() {
-      const res = await fetch('https://dummyjson.com/products/category/smartphones');
-      const data = await res.json();
-      console.log(data);
-      setProducts(data.products);
+      try {
+        const res = await fetch('https://dummyjson.com/products/category/smartphones');
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 500)
+      }
     }
 
     fetchProducts();
@@ -65,10 +76,37 @@ function App() {
     },
   ];
 
-
+  const addToCart = (product) => {
+    let cart = JSON.parse(localStorage.getItem('cart')) || []
+    const existingProduct = cart.find(item => item.id === product.id);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      product.quantity = 1;
+      cart.push(product);
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${product.title} added to cart!`);
+  }
 
   return (
     <>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/shop-cart' element={<ShopCart />} />
+        </Routes>
+      </BrowserRouter>
+
+      {loading ? (
+        <div className="fixed top-0 left-0 w-full h-screen bg-white flex items-center justify-center z-50">
+          <div className="flex flex-row gap-2">
+            <div className="w-10 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+            <div className="w-10 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+            <div className="w-10 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+          </div>
+        </div>
+      ) : null}
+
       <Header />
       <section className="bg-black text-white w-full h-screen flex items-center justify-center px-6">
         <div className="max-w-7xl w-full flex flex-col md:flex-row items-center justify-between gap-8">
@@ -138,42 +176,59 @@ function App() {
           </div>
         </section>
 
-        <section className='w-full bg-white py-12 px-4 '>
+        <section className='w-full bg-white py-12 px-4'>
           <div className="max-w-7xl mx-auto flex flex-col gap-6">
-            <div className="">
+            <div>
               <h1 className='text-3xl font-semibold text-center'>
                 Browse By Category
               </h1>
             </div>
-            <div className="w-full flex items-center justify-center gap-4">
+
+            {/* Tugmalar qatori (responsive) */}
+            <div className="w-full flex flex-wrap justify-center gap-4 md:gap-6">
               {
-                CategryBtn.map((item, index) => {
-                  return (
-                    <a href="#" key={index}>
-                      <button key={index} className="bg-gray-200 text-gray-700 px-12 py-6 rounded-lg hover:bg-gray-300 transition duration-300 cursor-pointer">
-                        <box-icon className="scale-125" name={item.name} type={item.type}></box-icon>
-                      </button>
-                    </a>
-                  )
-                })
+                CategryBtn.map((item, index) => (
+                  <a href="#" key={index}>
+                    <button className="bg-gray-200 text-gray-700 px-6 py-4 md:px-12 md:py-6 rounded-lg hover:bg-gray-300 transition duration-300 cursor-pointer flex items-center justify-center">
+                      <box-icon className="scale-125" name={item.name} type={item.type}></box-icon>
+                    </button>
+                  </a>
+                ))
               }
             </div>
           </div>
         </section>
 
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto grid grid-cols-5 gap-6">
 
+        <section className="py-12 px-4 bg-gray-50">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {products.map((item) => (
-              <div key={item.id} className="w-full flex flex-col gap-3  items-center justify-center hover:scale-105 transition duration-500 bg-white rounded-3xl shadow p-4">
-                <img src={item.thumbnail} alt={item.title} className="w-[200px] h-[200px] object-cover" />
-                <h2 className="text-xl font-semibold mt-2">{item.title}</h2>
-                <div className="flex items-center justify-center gap-3"><p className="text-gray-500 text-m">{item.brand}</p> <p className=''>{item.price}<span>$</span></p></div>
-                <button className='w-[120px] h-[40px] flex items-center justify-center gap-2 cursor-pointer transition-[0.3s] bg-black rounded-2xl text-white hover:bg-gray-800'>Buy <box-icon name='basket' color="#FFF" ></box-icon></button>
+              <div
+                key={item.id}
+                className="w-full flex flex-col items-center justify-between bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-500 p-5 group"
+              >
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  className="w-full h-[200px] object-cover rounded-2xl mb-4 group-hover:scale-105 transition-transform duration-300"
+                />
+
+                <h2 className="text-lg font-bold text-center text-gray-800">{item.title}</h2>
+
+                <div className="flex items-center justify-between w-full mt-2 text-sm text-gray-600">
+                  <p className="capitalize">{item.brand}</p>
+                  <p className="font-semibold text-black">${item.price}</p>
+                </div>
+
+                <button onClick={() => addToCart(item)} className="mt-4 w-full flex items-center justify-center gap-2 bg-black text-white py-2 rounded-xl hover:bg-gray-800 transition duration-300">
+                  Buy
+                  <box-icon name="basket" color="#fff"></box-icon>
+                </button>
               </div>
             ))}
           </div>
         </section>
+
 
         <section className="py-10 px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
