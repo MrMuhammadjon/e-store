@@ -107,7 +107,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/shop-cart' element={<ShopCart />} />
+          <Route path='/shop-cart' element={<ShopCart productapp={products} />} />
         </Routes>
       </BrowserRouter>
 
