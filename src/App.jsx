@@ -17,6 +17,7 @@ import SamsunZFOLD from '../public/SamsungZFold.png';
 
 
 function App() {
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,8 +77,16 @@ function App() {
     },
   ];
 
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalCount);
+  }, []);
+
   const addToCart = (product) => {
-    let cart = JSON.parse(localStorage.getItem('cart')) || []
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingProduct = cart.find(item => item.id === product.id);
     if (existingProduct) {
       existingProduct.quantity += 1;
@@ -86,8 +95,13 @@ function App() {
       cart.push(product);
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update count
+    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalCount);
+
     alert(`${product.title} added to cart!`);
-  }
+  };
 
   return (
     <>
@@ -107,7 +121,7 @@ function App() {
         </div>
       ) : null}
 
-      <Header />
+      <Header cartCount={cartCount} />
       <section className="bg-black text-white w-full h-screen flex items-center justify-center px-6">
         <div className="max-w-7xl w-full flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col gap-4">
