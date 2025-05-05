@@ -16,34 +16,6 @@ const BasketCart = () => {
         return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
     };
 
-
-    const cartItems = [
-        {
-            id: "1",
-            name: "Apple iPhone 14 Pro Max 128Gb Deep Purple",
-            code: "#25139626013984",
-            price: 139,
-            quantity: 1,
-            image: "https://dummyimage.com/80x80", // replace with actual image URL
-        },
-        {
-            id: "2",
-            name: "AirPods Max Silver",
-            code: "#35439538345",
-            price: 549,
-            quantity: 1,
-            image: "https://dummyimage.com/80x80",
-        },
-        {
-            id: "3",
-            name: "Apple Watch Series 9 GPS 41mm Starlight Aluminium",
-            code: "#863083224",
-            price: 399,
-            quantity: 1,
-            image: "https://dummyimage.com/80x80",
-        },
-    ];
-
     const PromoCode = [
         {
             id: "1",
@@ -61,6 +33,34 @@ const BasketCart = () => {
             discount: 20,
         },
     ]
+
+    const increaseProduct = (id) => {
+        const data = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log('+ is clicked');
+        
+        const updatedCart = cart.map(item => {
+          if (item.id === id) {
+            return { ...item, quantity: item.quantity + 1 };
+          }
+          return item;
+        });
+        setCart(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      };
+      
+      const decreaseProduct = (id) => {
+        console.log('- is clicked');
+        
+        const updatedCart = cart.map(item => {
+          if (item.id === id && item.quantity > 1) {
+            return { ...item, quantity: item.quantity - 1 };
+          }
+          return item;
+        });
+        setCart(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      };
+      
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const tax = 50;
@@ -81,9 +81,9 @@ const BasketCart = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button className="px-2 text-lg">−</button>
+                                <button className="px-2 text-lg" onClick={decreaseProduct}>−</button>
                                 <span>{item.quantity}</span>
-                                <button className="px-2 text-lg">+</button>
+                                <button className="px-2 text-lg" onClick={increaseProduct}>+</button>
                                 <p className="ml-6 font-semibold">${item.price}</p>
                                 <button className="ml-4 text-gray-400 hover:text-red-500">✕</button>
                             </div>
