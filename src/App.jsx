@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-rou
 import Header from './assets/Components/Header';
 import Footer from './assets/Components/Footer';
 import ShopCart from './assets/features/shopCart';
+import BasketCart from './assets/features/BasketCart';
 
 import appleImg from '../public/Iphone16.jpg';
 import irpodsPro from './assets/Img/irpodsPro.png';
@@ -99,7 +100,6 @@ function App() {
     // Update count
     const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     setCartCount(totalCount);
-
     alert(`${product.title} added to cart!`);
   };
 
@@ -108,6 +108,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/shop-cart' element={<ShopCart productapp={products} />} />
+        </Routes>
+      </BrowserRouter>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path='/basket-cart' element={<BasketCart/>} />
         </Routes>
       </BrowserRouter>
 
@@ -121,7 +127,7 @@ function App() {
         </div>
       ) : null}
 
-      <Header cartCount={cartCount} />
+      <Header cartCount={cartCount}/>
       <section className="bg-black text-white w-full h-screen flex items-center justify-center px-6">
         <div className="max-w-7xl w-full flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col gap-4">

@@ -16,6 +16,7 @@ function Header({ cartCount }) {
         { name: "heart", link: "#" },
         { name: 'user', link: '/user' },
         { name: 'box', link: '/shop-cart' },
+        {name: 'shopping-bag', link: '/basket-cart' },
     ];
 
 
