@@ -60,6 +60,12 @@ const BasketCart = () => {
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
       };
+
+      const removeProduct = (id) => {
+        const updatedCart = cart.filter(item => item.id !== id);
+        setCart(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      };
       
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -81,11 +87,11 @@ const BasketCart = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button className="px-2 text-lg" onClick={decreaseProduct}>−</button>
+                                <button className="px-2 text-lg" onClick={()=>decreaseProduct}>−</button>
                                 <span>{item.quantity}</span>
-                                <button className="px-2 text-lg" onClick={increaseProduct}>+</button>
+                                <button className="px-2 text-lg" onClick={()=>increaseProduct}>+</button>
                                 <p className="ml-6 font-semibold">${item.price}</p>
-                                <button className="ml-4 text-gray-400 hover:text-red-500">✕</button>
+                                <button className="ml-4 text-gray-400 hover:text-red-500" onClick={() => removeProduct(item.id)}>✕</button>
                             </div>
                         </div>
                     ))}
