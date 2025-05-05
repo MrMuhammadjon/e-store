@@ -35,7 +35,6 @@ const BasketCart = () => {
     ]
 
     const increaseProduct = (id) => {
-        const data = JSON.parse(localStorage.getItem('cart')) || [];
         console.log('+ is clicked');
         
         const updatedCart = cart.map(item => {

@@ -20,6 +20,8 @@ const ShopCart = ({ productapp }) => {
     { id: 25, title: 'Lava' }, { id: 26, title: 'Karbonn' }, { id: 27, title: 'Gionee' },
   ];
 
+  const [cartCount, setCartCount] = useState(0);
+
   useEffect(() => {
     let filtered = productapp;
 
@@ -61,9 +63,9 @@ const ShopCart = ({ productapp }) => {
     }
     localStorage.setItem('cart', JSON.stringify(cart));
 
+    // Update count
     const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     setCartCount(totalCount);
-
     alert(`${product.title} added to cart!`);
   };
 
